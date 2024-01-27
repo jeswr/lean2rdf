@@ -124,7 +124,6 @@ inductive Source
 | Namespace (n : String)
 | Constant (s : TermElabM Syntax)
 
-
 def getConstsFromSource (s : Source) : TermElabM (List Name) := do
   match s with
   | Source.Namespace n => do
@@ -135,24 +134,52 @@ def getConstsFromSource (s : Source) : TermElabM (List Name) := do
     return [name]
 
 
-def serializeAndWriteToFile (source : Source) (depth : Nat) : TermElabM Unit := do
+def serializeAndWriteToFile (source : Source) (depth : Nat) : TermElabM String := do
   let consts ← getConstsFromSource source
-  let name ← match source with
-    | Source.Namespace n => do
-      pure n
-    | Source.Constant s => do
-      let expr ← getExpr s
-      pure (expr.constName!).toString
-
   let g ← getUsedConstantGraph consts depth
   let js ←  serializeList g
-  let _ ← writeJsonToFile ((toString name).append ".json") js
-
--- def serialize (source: Source) := do
---   source.
-
+  pure (toString js)
 
 -- Edit and uncomment one of the lines below to get your .json file created in the current workspace folder
 
--- #eval serializeAndWriteToFile (Source.Constant `(@Nat.add_zero)) 7
--- #eval serializeAndWriteToFile (Source.Namespace "Nat") 2
+def reverse (arr: List Nat) : List Nat :=
+  match arr with
+  | [] => []
+  | x :: xs => reverse xs ++ [x]
+
+-- theorem revrev (arr: List Nat) : reverse (reverse arr) = arr :=
+--   match arr with
+--   | [] => rfl
+--   | x :: xs => by simp [reverse, revrev xs]
+
+theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+  apply And.intro
+  case left => exact hp
+  case right =>
+    apply And.intro
+    case left => exact hq
+    case right => exact hp
+
+def cs: TermElabM Syntax := `(test)
+
+def matcher (s : Syntax): Except String String :=
+  match s with
+  | Syntax.missing => Except.error "missing"
+  | Syntax.node info kind args => Except.ok "node"
+  | Syntax.atom info val => Except.ok "atom"
+  | Syntax.ident info rawVal val preresolved => Except.ok "ident"
+
+def Elabmatcher (s : Syntax): Except String String :=
+  match s with
+  | Syntax.missing => Except.error "missing"
+  | Syntax.node info kind args => Except.ok "node"
+  | Syntax.atom info val => Except.ok "atom"
+  | Syntax.ident info rawVal val preresolved => Except.ok "ident"
+
+
+-- cs.
+#eval cs
+
+#eval serializeAndWriteToFile (Source.Constant `(test)) 1
+#eval serializeAndWriteToFile (Source.Constant `(@Nat.add_zero)) 7
+#eval serializeAndWriteToFile (Source.Namespace "Nat") 2
