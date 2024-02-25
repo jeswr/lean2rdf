@@ -32,9 +32,9 @@ def getExpr (x : TermElabM Syntax) : TermElabM Expr := do
   let synt ← x
   elabTerm synt none
 
-def c := (getExpr cs2).run' {}
+-- def c := (getExpr cs2).run' {}
 
--- def getExpr (x : TermElabM Syntax) :=
---   | Term
+-- -- def getExpr (x : TermElabM Syntax) :=
+-- --   | Term
 
-#eval (getExpr cs2).run' {}
+-- #eval (getExpr cs2).run' {}

@@ -1,0 +1,14 @@
+{"version": 7,
+ "packagesDir": ".lake/packages",
+ "packages":
+ [{"url": "https://github.com/jeswr/RDF.lean",
+   "type": "git",
+   "subDir": null,
+   "rev": "535876842f054ab73360685ab1c1ac8e97674b81",
+   "name": "RDF",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "main",
+   "inherited": false,
+   "configFile": "lakefile.lean"}],
+ "name": "lean2rdf",
+ "lakeDir": ".lake"}
